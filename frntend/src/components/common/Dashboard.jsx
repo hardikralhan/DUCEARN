@@ -204,14 +204,14 @@ import { useState, useEffect } from "react";
                       fontWeight="600"
                       color={colors.grey[100]}
                     >
-                      Revenue Generated
+                      Referral ID Generated
                     </Typography>
                     <Typography
                       variant="h5"
-                      fontWeight="600"
+                      fontWeight="800"
                       color={colors.greenAccent[500]}
                     >
-                      $58,373,698
+                      {userDetail?.userDetails?.ownReferralCode}
                     </Typography>
                   </Box>
                   <Box>
