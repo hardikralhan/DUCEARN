@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { loginUserService } from '../../services/authServices'
 import axios from 'axios'
 
-export const Login = () => {
+export default function Login(){
 
   const dispatch = useDispatch() 
 
@@ -18,36 +18,35 @@ export const Login = () => {
     if(email && password) return true 
     else false;
   }
-  const handleClick = async (e) =>{ debugger
+  const handleClick = async(e) =>{ debugger
     try { 
       setOpen(true)
       if(validateData()){ 
         let dataToSend = {} 
         dataToSend.userId = email
         dataToSend.password = password 
+        let data = JSON.stringify(dataToSend);
         // let res = await loginUserService(dataToSend)
-        const response = await fetch("https://catfact.ninja/fact", { 
-          method: "GET", // *GET, POST, PUT, DELETE, etc.
-          mode: "cors", // no-cors, *cors, same-origin
-          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: "same-origin", // include, *same-origin, omit
-          headers: {
-            "Content-Type": "application/json",
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          redirect: "follow", // manual, *follow, error
-          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          // body: JSON.stringify(dataToSend), // body data type must match "Content-Type" header
-        });
-        dispatch({
+        let response = await fetch('http://localhost:5000/api/auth/login', {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "Access-Control-Request-":"http://localhost:5000",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: data, // body data type must match "Content-Type" header
+        })
+        console.log( response);
+        dispatch({ 
           type: 'SET_TOKEN',
           payload: res.data.result.token
         })
+        debugger
         dispatch({
           type: "SET_ISSHOW",
           payload: true,
         });
-        setIsLoggedIn(true)
+        // setIsLoggedIn(true)
         setOpen(false)
         navigate("/dashboard")
         e.preventDefault()
@@ -59,6 +58,12 @@ export const Login = () => {
       ToastError(error)
     }
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
 //     /*

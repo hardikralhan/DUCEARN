@@ -1,0 +1,891 @@
+.paragraph_color {
+    color: black;
+  }
+  
+  .shareModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    height: 200px;
+    background-color: white;
+    box-shadow: 24;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 30px;
+  }
+  
+  .iconContainer {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-self: center;
+  }
+  
+  .clipboardContainer {
+    width: 90%;
+    height: 40px;
+    margin-top: 30px;
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .main__dashboard {
+    display: flex;
+    flex-direction: column;
+    padding: 4%;
+    /* position: fixed; */
+  }
+  
+  .blur {
+    -webkit-filter: blur(2px);
+  }
+  
+  
+  
+  .mainDashboard__firstDiv {
+    margin-top: -4%;
+  
+    display: flex;
+    color: #ffffff;
+  }
+  
+  .mainDashboard__firstDiv__rightBox_details {
+    display: flex;
+  }
+  
+  .mainDashboard__firstDiv__leftBox {
+    background: linear-gradient(315deg, #6b64bc -18.5%, #534c98 166.67%),
+      linear-gradient(180deg, #6b64bc 0%, #514a96 100%);
+    background-blend-mode: soft-light, normal;
+    mix-blend-mode: normal;
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%),
+      10px 10px 30px rgb(55 77 109 / 50%);
+    border-radius: 50px;
+    width: 26vw;
+    text-align: center;
+    height: 12vw;
+    /* align-items: center; */
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mainDashboard__firstDiv__leftBox p {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 2vw;
+    /* line-height: 75px; */
+    color: #ffffff;
+  }
+  
+  .wallet__count {
+    font-size: 6vw !important;
+  }
+  
+  .mainDashboard__firstDiv__rightBox {
+    margin-left: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  
+  .mainDashboard__firstDiv__rightBox p {
+    background: linear-gradient(315deg, #6b64bc -18.5%, #534c98 166.67%),
+      linear-gradient(180deg, #6b64bc 0%, #514a96 100%);
+    background-blend-mode: soft-light, normal;
+    mix-blend-mode: normal;
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%),
+      10px 10px 30px rgb(55 77 109 / 50%);
+    border-radius: 50px;
+    width: 18vw;
+    padding: 2%;
+    text-align: center;
+    margin: 2%;
+    font-size: 1.4vw;
+    cursor: pointer;
+  }
+  
+  .upgradePlan {
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%), 10px 10px 30px rgb(55 77 109 / 50%) !important;
+    border-radius: 50px !important;
+    width: 12vw !important;
+    padding: 2% !important;
+    text-align: center !important;
+    /* margin: 2% !important; */
+    font-size: 1.1vw !important;
+    cursor: pointer !important;
+    color: #6357af;
+    border: 2px solid #6357af;
+    margin-left: 5vw;
+    margin-bottom: 5%;
+    cursor: pointer !important;
+  }
+  
+  .upgradePlan__modal {
+    position: Fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: 10% !important;
+    -webkit-transform: translate(-50%, -50%) !important;
+    -moz-transform: translate(-50%, -50%) !important;
+    -ms-transform: translate(-50%, -50%) !important;
+    transform: translate(-50%, -50%) !important;
+    width: 50% !important;
+    height: 300px !important;
+    background: #E9EDF0 !important;
+    border: 0.5px solid #FEFEFF !important;
+    box-shadow: 10px 10px 24px rgb(166 180 200 / 70%), -12px -12px 20px rgb(255 255 255 / 80%) !important;
+    border-radius: 40px !important;
+  }
+  
+  .upgradePlan_select {
+    padding: 1% 2%;
+    background: #f5f5fa;
+    box-shadow: -2px -2px 4px rgb(255 255 255 / 50%), 2px 2px 4px rgb(170 170 204 / 25%), 5px 5px 10px rgb(170 170 204 / 50%), -5px -5px 10px #ffffff;
+    border-radius: 40px;
+    height: 17%;
+    font-size: 0.9vw !important;
+    color: #7878ab;
+    border: none;
+    width: 20vw;
+    margin-top: 5%;
+  }
+  
+  
+  
+  .mainDashboard__firstDiv__rightBox__autoTouup {
+    display: flex;
+    align-items: c;
+  }
+  
+  .mainDashboard__firstDiv__rightBox span {
+    color: #6357af;
+    margin-left: 5%;
+  }
+  
+  .mainDashboard__secondDiv__boxes {
+    display: flex;
+    flex-direction: column;
+    color: #473b8c;
+    margin-top: -4%;
+  }
+  
+  .boxCount {
+    text-shadow: -1px 0 5px #473b8c;
+  
+    font-style: normal;
+    font-weight: 800;
+    font-size: 2.7vw;
+    line-height: 9.3vw;
+    color: #473b8c;
+    margin-top: -6%;
+  }
+  
+  .mainDashboard__secondDiv__boxes__firstRow {
+    display: flex;
+  }
+  
+  .mainDashboard__secondDiv__boxes__firstRow__box {
+    background: linear-gradient(315deg, #6b64bc -18.5%, #534c98 166.67%),
+      linear-gradient(180deg, #f2f4fa 0%, #ecf1fe 100%);
+    background-blend-mode: soft-light, normal;
+    mix-blend-mode: normal;
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%),
+      10px 10px 30px rgb(55 77 109 / 50%);
+    border-radius: 40px 40px 40px 30px;
+    width: 25vw;
+    text-align: center;
+    margin: 10% 2%;
+    height: 10vw;
+    max-width: 395px;
+    max-height: 180px;
+  
+  }
+  
+  .mainDashboard__secondDiv__boxes__firstRow__box__img {
+    margin-top: -15%;
+    box-shadow: -5px -5px 10px rgba(255, 255, 255, 0.25),
+      -10px -10px 10px rgba(255, 255, 255, 0.93), 5px 5px 10px rgba(0, 0, 0, 0.25),
+      10px 10px 10px #cdcfd7;
+    border-radius: 50%;
+  }
+  
+  .mainDashboard__secondDiv__boxes__secondRow {
+    display: flex;
+    margin-top: -14%;
+  }
+  
+  .mainDashboard__secondDiv__boxes__secondRow_box {
+    background: linear-gradient(315deg, #6b64bc -18.5%, #534c98 166.67%),
+      linear-gradient(180deg, #f2f4fa 0%, #ecf1fe 100%);
+    background-blend-mode: soft-light, normal;
+    mix-blend-mode: normal;
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%),
+      10px 10px 30px rgb(55 77 109 / 50%);
+    border-radius: 40px 40px 40px 30px;
+    width: 25vw;
+    text-align: center;
+    margin: 10% 2%;
+    height: 10vw;
+    max-width: 395px;
+    max-height: 180px;
+  
+  }
+  
+  .mainDashboard__secondDiv__boxes__secondRow_box__img {
+    margin-top: -15%;
+    box-shadow: -5px -5px 10px rgba(255, 255, 255, 0.25),
+      -10px -10px 10px rgba(255, 255, 255, 0.93), 5px 5px 10px rgba(0, 0, 0, 0.25),
+      10px 10px 10px #cdcfd7;
+    border-radius: 50%;
+  }
+  
+  .css-1j7zkcj {
+    height: fit-content !important;
+    border: none !important;
+  }
+  
+  .modalinside {
+    margin: 5% 10% 5% 10%;
+  }
+  
+  .modalinside_heading {
+    color: #7878ab;
+    font-size: 1.3vw;
+    font-weight: 800;
+  }
+  
+  .modalinside_input {
+    background: #f5f5fa;
+    /* Inner shadow 2 */
+    box-shadow: inset -2px -2px 4px rgba(255, 255, 255, 0.5),
+      inset 2px 2px 4px rgba(170, 170, 204, 0.25),
+      inset 5px 5px 10px rgba(170, 170, 204, 0.5), inset -5px -5px 10px #ffffff;
+    border-radius: 40px;
+    border: none !important;
+    height: 3vw;
+    width: 40vw;
+    text-align: center;
+  }
+  
+  .modalinside_button {
+    margin: 4% 5% !important;
+    padding: 2% 5% !important;
+    background: #273e7b !important;
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%),
+      10px 10px 30px rgb(55 77 109 / 50%) !important;
+    border-radius: 50px !important;
+    color: white !important;
+    align-items: center;
+    width: 17vw;
+  }
+  
+  .modalinside_button1 {
+    margin: 4% 5% !important;
+    padding: 1.5% 12% !important;
+    background: #273e7b !important;
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%),
+      10px 10px 30px rgb(55 77 109 / 50%) !important;
+    border-radius: 50px !important;
+    color: white !important;
+  }
+  
+  .modalDepositinside {
+    margin: 5% 10% 5% 10%;
+    text-align: center;
+  }
+  
+  .modalinside_depositButton1 {
+    margin: 4% 5% !important;
+    padding: 1.5% 12% !important;
+    /* background: linear-gradient(315deg, #092737 -18.5%, #043844 166.67%), #E7EBF0; */
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%),
+      10px 10px 30px rgb(55 77 109 / 50%) !important;
+    border-radius: 50px !important;
+    color: #7878ab !important;
+  }
+  
+  .modalrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .unknown {
+    margin: 4% 5% !important;
+    padding: 1.5% 12% !important;
+    /* background: linear-gradient(315deg, #092737 -18.5%, #043844 166.67%), #E7EBF0; */
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%), 10px 10px 30px rgb(55 77 109 / 50%) !important;
+    border-radius: 50px !important;
+    color: #7878ab !important;
+  }
+  
+  .main__dashboardToplogo {
+    width: 100%;
+  }
+  
+  .refferList {
+    padding: 1%;
+  }
+  
+  .main__dashboard__boxes {
+    display: flex;
+    width: 70%;
+  }
+  
+  .modalinside_upgradePlanButton1 {
+    margin: 4% 5% !important;
+    padding: 1.5% 12% !important;
+    /* background: linear-gradient(315deg, #092737 -18.5%, #043844 166.67%), #E7EBF0; */
+    box-shadow: -10px -10px 25px rgb(255 255 255 / 85%), 10px 10px 30px rgb(55 77 109 / 50%) !important;
+    border-radius: 50px !important;
+    color: #7878ab !important;
+  }
+  
+  
+  
+  .main__dashboard__boxes__forResponsive {
+    display: flex;
+  }
+  
+  .main__dashboard__boxes__forResponsive__forAlignBox4toBottom {
+    display: flex;
+  }
+  
+  .main__dashboard__leftBoxes {
+    font-weight: 800;
+    margin: 0% 4%;
+  }
+  
+  
+  
+  
+  
+  .css-1w1c116 {
+    margin: auto !important;
+  
+  }
+  
+  .css-1wtrznv {
+    margin: auto !important;
+  }
+  
+  .css-f3jnds-MuiDataGrid-columnHeaders {
+    background: linear-gradient(315deg, #6b64bc -18.5%, #534c98 166.67%), linear-gradient(180deg, #6b64bc, #514a96) !important;
+  }
+  
+  .css-1jbbcbn-MuiDataGrid-columnHeaderTitle {
+    color: white !important;
+    font-weight: 800 !important;
+    font-size: 0.8vw !important;
+  }
+  
+  
+  .main__dashboard__middleArea {
+    margin: 27% 4%;
+  }
+  
+  .main__dashboard__middleAreaLogo {
+    width: 100%;
+  }
+  
+  .animatedLogoforresponsive {
+    width: 50%;
+    display: none;
+  }
+  
+  .main__dashboard__Logoforresponsive {
+    width: 100%;
+    display: none;
+  }
+  
+  .main__dashboard__middleArea__box4forResponsive {
+    /* display: none; */
+  }
+  
+  
+  
+  .main__dashboard__rightBoxes {
+    font-weight: 800;
+    margin: 0% 4%;
+  }
+  
+  
+  
+  
+  
+  
+  @media screen and (min-device-width: 0px) and (max-device-width: 450px) {
+    .main__dashboard__leftBox__heading {
+      font-size: 9px !important;
+      margin-top: 26px !important;
+    }
+  
+    .main__dashboard__leftBox__count {
+      margin-top: -10px !important;
+      font-size: 10px;
+    }
+  
+    .main__dashboard__middleArea__heading {
+      font-size: 9px !important;
+      margin-top: 26px !important;
+    }
+  
+    .main__dashboard__middleArea__count {
+      margin-top: -10px !important;
+      font-size: 10px;
+    }
+  
+    .main__dashboard__rightBox__heading {
+      font-size: 9px !important;
+      margin-top: 26px !important;
+    }
+  
+    .main__dashboard__rightBox__count {
+      margin-top: -10px !important;
+      font-size: 10px;
+    }
+  
+    .main__dashboard__leftBoxes__box1 {
+      width: 28vw !important;
+      margin: 4% 0% !important;
+    }
+  
+    .main__dashboard__leftBoxes__box2 {
+      width: 28vw !important;
+      margin: 4% 0% !important;
+    }
+  
+    .main__dashboard__leftBoxes__box3 {
+      width: 28vw !important;
+      margin: 4% 0% !important;
+    }
+  
+    .box3Heading {
+      font-size: 8px !important;
+    }
+  
+    .main__dashboard__middleArea__box4forresponsive {
+      margin-top: 10%;
+  
+      font-size: 12px;
+      width: 28vw !important;
+      margin: 4% 0% !important;
+    }
+  
+    .main__dashboard__middleArea__box4forresponsive__details {
+      margin-top: 10%;
+      font-size: 10px;
+    }
+  
+    .main__dashboard__rightBoxes__box5 {
+      width: 28vw !important;
+      margin: 4% 0% !important;
+    }
+  
+    .main__dashboard__rightBoxes__box6 {
+      width: 28vw !important;
+      margin: 4% 0% !important;
+    }
+  
+    .main__dashboard__rightBoxes__box7 {
+      width: 28vw !important;
+      margin: 4% 0% !important;
+    }
+  
+    .main__dashboard__middleArea__box4forresponsive__heading {
+      font-size: 8px !important;
+      margin-top: 15px !important;
+    }
+  
+    .main__dashboard__middleArea__box4forresponsive__count {
+      font-size: 10px !important;
+      margin-top: -10px !important;
+    }
+  }
+  
+  @media screen and (min-device-width: 450px) and (max-device-width: 650px) {
+    .main__dashboard__leftBox__heading {
+      font-size: 9px !important;
+      margin-top: 16px !important;
+    }
+  
+    .main__dashboard__leftBox__count {
+      margin-top: -15px !important;
+      font-size: 10px;
+    }
+  
+    .main__dashboard__middleArea__heading {
+      font-size: 9px !important;
+      margin-top: 16px !important;
+    }
+  
+    .main__dashboard__middleArea__count {
+      margin-top: -10px !important;
+      font-size: 10px !important;
+    }
+  
+    .main__dashboard__rightBox__heading {
+      font-size: 9px !important;
+      margin-top: 16px !important;
+    }
+  
+    .main__dashboard__rightBox__count {
+      margin-top: -10px !important;
+      font-size: 10px;
+    }
+  }
+  
+  @media screen and (min-device-width: 650px) and (max-device-width: 700px) {
+    .main__dashboard__leftBox__heading {
+      font-size: 9px;
+      margin-top: 16px;
+    }
+  
+    .main__dashboard__leftBox__count {
+      font-size: 10px;
+    }
+  
+    .main__dashboard__middleArea__heading {
+      font-size: 9px;
+      margin-top: 16px;
+    }
+  
+    .main__dashboard__middleArea__count {
+      font-size: 10px;
+    }
+  
+    .main__dashboard__rightBox__heading {
+      font-size: 9px;
+      margin-top: 16px;
+    }
+  
+    .main__dashboard__rightBox__count {
+      font-size: 10px;
+    }
+  }
+  
+  @media screen and (min-device-width: 700px) and (max-device-width: 955px) {
+    .main__dashboard__leftBox__heading {
+      font-size: 9px;
+      margin-top: 10px;
+    }
+  
+    .main__dashboard__leftBox__count {}
+  
+    .main__dashboard__middleArea__heading {
+      font-size: 9px;
+      margin-top: 10px;
+    }
+  
+    .main__dashboard__middleArea__count {}
+  
+    .main__dashboard__rightBox__heading {
+      font-size: 9px;
+      margin-top: 10px;
+    }
+  
+    .main__dashboard__rightBox__count {}
+  }
+  
+  @media screen and (min-device-width: 955px) and (max-device-width: 1170px) {
+    .main__dashboard__leftBox__heading {
+      font-size: 14px;
+    }
+  
+    .main__dashboard__leftBox__count {}
+  
+    .main__dashboard__middleArea__heading {
+      font-size: 14px;
+    }
+  
+    .main__dashboard__middleArea__count {}
+  
+    .main__dashboard__rightBox__heading {
+      font-size: 14px;
+    }
+  
+    .main__dashboard__rightBox__count {}
+  }
+  
+  
+  @media screen and (min-device-width: 0px) and (max-device-width: 1000px) {
+    .main__dashboard__middleArea {
+      display: none;
+    }
+  
+    .animatedLogoforresponsive {
+      display: block;
+    }
+  
+  
+  
+    .main__dashboard__boxes__forResponsive {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+  
+    .main__dashboard__boxes {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .main__dashboard__middleArea__box4forresponsive {
+      display: none;
+    }
+  
+    .main__dashboard__boxes__forResponsive__forAlignBox4toBottom {
+      display: flex;
+    }
+  
+    .main__dashboard__middleArea__box4forresponsive__heading {
+      font-size: 10px;
+      margin-top: 29px;
+    }
+  }
+  
+  @media screen and (min-device-width: 0px) and (max-device-width: 1000px) {
+    .modalinside_heading {
+      color: #7878ab;
+      font-size: 4.2vw;
+      font-weight: 800;
+    }
+  
+    .mainDashboard__firstDiv__leftBox {
+      background-blend-mode: soft-light, normal;
+      mix-blend-mode: normal;
+      border-radius: 123px !important;
+      width: 26vw;
+      text-align: center;
+      height: 21vw;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      flex-direction: column;
+      border: 16px solid#514A96;
+      color: black;
+      border-radius: 50% !important;
+      padding: 5%;
+      background: linear-gradient(315deg, #e9edf0 -18.5%, #e0e0e0 166.67%), linear-gradient(180deg, #e9edf0 0%, #c0c0c0 100%);
+      box-shadow: -10px -10px 25px rgb(255 255 255 / 85%), 10px 10px 30px rgb(55 77 109 / 50%);
+      margin-top: 10%;
+    }
+  
+    .mainDashboard__firstDiv__rightBox_details {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: auto;
+      justify-content: space-around;
+    }
+  
+    .mainDashboard__firstDiv__leftBox p {
+      color: #7871c9;
+      font-size: 5vw;
+    }
+  
+    .mainDashboard__firstDiv {
+      margin-top: -4%;
+      display: flex;
+      flex-direction: column;
+      color: #ffffff;
+      text-align: center;
+      align-items: center;
+    }
+  
+    .wallet__count {
+      font-size: 9vw !important;
+  
+    }
+  
+    .mainDashboard__firstDiv__rightBox {
+      margin-left: 0%;
+      margin-top: 4%;
+    }
+  
+    .mainDashboard__secondDiv__boxes {
+      margin-top: 4%;
+      align-items: center;
+    }
+  
+    .mainDashboard__secondDiv__boxes__firstRow {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 14%;
+    }
+  
+    .mainDashboard__secondDiv__boxes__secondRow {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .mainDashboard__secondDiv__boxes__firstRow__box {
+      display: flex;
+      align-items: center;
+      /* justify-content: space-evenly; */
+      width: 80vw;
+      height: 24vw;
+  
+      border-radius: 20px;
+      margin: 2% 0%;
+    }
+  
+    .mainDashboard__secondDiv__boxes__firstRow__box__img {
+      width: 10vw;
+      height: 10vw;
+      margin: 0% 5%;
+    }
+  
+    .mainDashboard__secondDiv__boxes__secondRow_box {
+      display: flex;
+      align-items: center;
+      /* justify-content: space-evenly; */
+      width: 80vw;
+      height: 24vw;
+      border-radius: 20px;
+      margin: 2% 0%;
+    }
+  
+    .mainDashboard__secondDiv__boxes__firstRow__box div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: -15vw;
+      width: 100%;
+    }
+  
+    .mainDashboard__secondDiv__boxes__secondRow_box div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: -15vw;
+  
+      width: 100%;
+    }
+  
+    .mainDashboard__secondDiv__boxes__secondRow_box__img {
+      width: 10vw;
+      height: 10vw;
+      margin: 0% 5%;
+    }
+  
+    .boxCount {
+      font-size: 7vw;
+      margin-top: 0%;
+  
+    }
+  
+    .mainDashboard__firstDiv__rightBox p {
+      font-size: 4vw;
+      padding: 5%;
+      width: -moz-fit-content;
+      width: fit-content;
+      margin-right: 5%;
+    }
+  
+    .withdraw {
+      margin-left: 5%;
+    }
+  
+    .mainDashboard__firstDiv__rightBox__autoTouup {
+      display: flex;
+      margin-top: 4vw;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+  
+    .upgradePlan {
+      font-size: 4.1vw !important;
+      margin-bottom: 5%;
+      width: 45vw !important;
+  
+    }
+  
+    .css-1j7zkcj {
+      width: 70% !important;
+      height: 45vw !important;
+    }
+  
+    .modalinside_input {
+      height: 8vw;
+  
+      width: 55vw;
+      margin: 2vw 0vw;
+    }
+  
+    .modalrow {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+  
+    .css-1j7zkcj {
+      height: fit-content !important;
+    }
+  
+    .modalinside_button {
+      width: 55vw !important;
+      height: 7vw;
+    }
+  
+    .modalinside_button1 {
+      width: 55vw !important;
+  
+    }
+  
+    .upgradePlan_select {
+      margin: 4vw 0vw;
+      width: 36vw;
+      font-size: 3.9vw !important;
+      height: 7vw;
+  
+    }
+  
+    .modalinside_upgradePlanButton1 {
+      font-size: 4vw !important;
+    }
+  
+    .upgradePlan_select option {
+      font-size: 3vw;
+      margin: 0% 2%;
+    }
+  
+    .css-1wtrznv {
+      height: 550px !important;
+      width: 90% !important;
+      margin: 10% auto !important;
+    }
+  
+    .css-1jbbcbn-MuiDataGrid-columnHeaderTitle {
+      font-size: 3.5vw !important;
+    }
+  
+    .shareModal {
+      width: 80%;
+    }
+  
+    .iconContainer {
+      width: 100%;
+    }
+  
+    .clipboardContainer {
+      width: 100%;
+    }
+  
+  
+  }

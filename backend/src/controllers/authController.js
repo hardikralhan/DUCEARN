@@ -14,19 +14,19 @@ const userLoginController = async (req, res, next) => {
 
 const userSignupController = async (req, res, next) => {
     try {
-        // let { name,dob,mobile,email,referralId,password,confirmPassword,package } = req.body;
+        let { name,dob,mobile,email,referralId,password,confirmPassword,package,joiningAmount,currency } = req.body;
 
-        let { name,dob,mobile,email,referralId,password,confirmPassword,package,joiningAmount,currency } =  {
-            "name": "nitin",
-            "dob": 24081999,
-            "mobile":9991052862,
-            "email":"nitin@gmail.com",
-            "password":"test",
-            "confirmPassword":"test",
-            "package":"Ascend",
-            "joiningAmount": 50,
-            "currency": "busd"
-        }
+        // let { name,dob,mobile,email,referralId,password,confirmPassword,package,joiningAmount,currency } =  {
+        //     "name": "nitin",
+        //     "dob": 24081999,
+        //     "mobile":9991052862,
+        //     "email":"nitin@gmail.com",
+        //     "password":"test",
+        //     "confirmPassword":"test",
+        //     "package":"Ascend",
+        //     "joiningAmount": 50,
+        //     "currency": "busd"
+        // }
 
         const result = await userSignUpService(name,dob,mobile,email.toLowerCase(),referralId,password,confirmPassword,package,joiningAmount,currency);
 

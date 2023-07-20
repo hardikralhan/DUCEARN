@@ -153,7 +153,6 @@ const getTokenOfUserService = async (userId) => {
 
 const userSignUpService = async (name,dob,mobile,email,referralCode,password,confirmPassword,package,amount,currency) => {
     try {
-        let userDetails = {};
         const aggregate = [
             {
                 $match: {
@@ -161,11 +160,11 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 }
             }
         ]
-        // const userExists = await User.aggregate(aggregate);
+        const userExists = await User.aggregate(aggregate);
 
-        // if(userExists.length != 0){
-        //     throw new APIError("BAD_INPUT", HttpStatusCode.BAD_INPUT, true, 'This user already exists.')
-        // }
+        if(userExists.length != 0){
+            throw new APIError("BAD_INPUT", HttpStatusCode.BAD_INPUT, true, 'This user already exists.')
+        }
 
         if(password != confirmPassword){
             throw new APIError("BAD_INPUT", HttpStatusCode.BAD_INPUT, true, 'Password does not match.')
@@ -173,7 +172,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
 
         let isRoot = false;
 
-        if(referralCode == undefined){
+        if(referralCode == ''){
             referralCode = await getCompanyReferralCode()
         }
         
@@ -299,16 +298,16 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 joiningAmount: joining_amount
             }
 
-            // let user = await User.create(userObject)
-            // await user.save();
+            let user = await User.create(userObject)
+            await user.save();
 
             // get result from saved users doc of this user
 
 
             const lastUserRegisteredNumber = await getLastUserNumber(); 
             // we will get the new user's Id
-            // let userIdByOwnReferral = await getUserIdByOwnReferralIdService(ownReferralCode);
-            let userIdByOwnReferral = await getUserIdByOwnReferralIdService("DU7208315");
+            let userIdByOwnReferral = await getUserIdByOwnReferralIdService(ownReferralCode);
+            // let userIdByOwnReferral = await getUserIdByOwnReferralIdService("DU7208315");
             
 
             // calculating for which level should new user will come
@@ -332,8 +331,8 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 userCountByRoot: lastUserRegisteredNumber.userCountByRoot + 1
             }
 
-            // let parent = await Parent.create(parentObject)
-            // await parent.save();
+            let parent = await Parent.create(parentObject)
+            await parent.save();
 
             let referralObject = {
                 userId : userIdByOwnReferral,
@@ -341,8 +340,8 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 referralGivenTo: []
             }
 
-            // let referralRecord = await ReferralRecord.create(referralObject)
-            // await referralRecord.save();
+            let referralRecord = await ReferralRecord.create(referralObject)
+            await referralRecord.save();
 
             // Total Income added
             let TIObject = {
@@ -350,8 +349,8 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 throughOwnReferral: 0,
                 throughLevel: 0
             }
-            // const TI = await TotalIncome.create(TIObject);
-            // await TI.save();
+            const TI = await TotalIncome.create(TIObject);
+            await TI.save();
 
             // Wallet added
             let walletObject = {
@@ -359,8 +358,8 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 walletBalance: 0,
                 lostBalance: 0
             }
-            // let wallet = await Wallet.create(walletObject)
-            // await wallet.save();
+            let wallet = await Wallet.create(walletObject)
+            await wallet.save();
 
             // transactionadded
             let transactionObject = {
@@ -370,8 +369,8 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 currency: currency,
                 package: package
             }
-            // let transaction = await Transaction.create(transactionObject)
-            // await transaction.save();
+            let transaction = await Transaction.create(transactionObject)
+            await transaction.save();
 
             // get count of this user by getting data from parent table in userCountByRoot in desc
 
@@ -405,27 +404,27 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                     currentParent: true,
                 }
     
-                // await Parent.findOneAndUpdate
-                // ({
-                //     _id:nextParentData._id
-                // },
-                // {
-                //     $set: nextParentObjectUpdate
-                // },
-                // {
-                //     new: true
-                // });
+                await Parent.findOneAndUpdate
+                ({
+                    _id:nextParentData._id
+                },
+                {
+                    $set: nextParentObjectUpdate
+                },
+                {
+                    new: true
+                });
             }
-            // await Parent.findOneAndUpdate
-            // ({
-            //     _id:parentData._id
-            // },
-            // {
-            //     $set: parentObjectUpdateForParent
-            // },
-            // {
-            //     new: true
-            // });
+            await Parent.findOneAndUpdate
+            ({
+                _id:parentData._id
+            },
+            {
+                $set: parentObjectUpdateForParent
+            },
+            {
+                new: true
+            });
             
             
 
@@ -440,19 +439,19 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             let array = RefreereferralData[0].referralGivenTo;
             array.push(referralCode);
 
-            // await ReferralRecord.findOneAndUpdate
-            // ({
-            //     userId:userIdOfReferrer
-            // },
-            // {
-            //     $set: {
-            //         totalReferralGiven: RefreereferralData[0].totalReferralGiven + 1,
-            //         referralGivenTo: array
-            //     }
-            // },
-            // {
-            //     new: true
-            // });
+            await ReferralRecord.findOneAndUpdate
+            ({
+                userId:userIdOfReferrer
+            },
+            {
+                $set: {
+                    totalReferralGiven: RefreereferralData[0].totalReferralGiven + 1,
+                    referralGivenTo: array
+                }
+            },
+            {
+                new: true
+            });
 
             // distribute 25% referral profit to referral user  ------------------------------==========================================
             // update into wallet(update), commission(insert), totalIncome(update) for referral user
@@ -472,27 +471,27 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             const profit_lossOFRefree = await checkProfitAndLostIncome(amountByRefferal,total_income,userIdOfReferrer);
             // update
             if(profit_lossOFRefree.profit > 0){  // if there is a profit then only it will update to total income
-                // await updatetotalIncome( {userId : refreeTotalIncomeData[0].userId}, 
-                //     {
-                //         throughOwnReferral : refreeTotalIncomeData[0].throughOwnReferral + profit_lossOFRefree.profit,
-                //     }
-                // )
-                // await insertCommission({
-                //     userId: userIdOfReferrer,
-                //     commissionFrom: userIdByOwnReferral,
-                //     commissionFromAmount: joining_amount,
-                //     commissionAmount: profit_lossOFRefree.profit,
-                //     head: 0
-                // });
+                await updatetotalIncome( {userId : refreeTotalIncomeData[0].userId}, 
+                    {
+                        throughOwnReferral : refreeTotalIncomeData[0].throughOwnReferral + profit_lossOFRefree.profit,
+                    }
+                )
+                await insertCommission({
+                    userId: userIdOfReferrer,
+                    commissionFrom: userIdByOwnReferral,
+                    commissionFromAmount: joining_amount,
+                    commissionAmount: profit_lossOFRefree.profit,
+                    head: 0
+                });
             }
             if(profit_lossOFRefree.loss > 0){   // add into commission table if loss and profit or only loss no profit
-                // await insertCommission({
-                //     userId: userIdOfReferrer,
-                //     commissionFrom: userIdByOwnReferral,
-                //     commissionFromAmount: joining_amount,
-                //     commissionAmount: profit_lossOFRefree.loss,
-                //     head: 1
-                // });
+                await insertCommission({
+                    userId: userIdOfReferrer,
+                    commissionFrom: userIdByOwnReferral,
+                    commissionFromAmount: joining_amount,
+                    commissionAmount: profit_lossOFRefree.loss,
+                    head: 1
+                });
             }
 
             // get old wallet details of refreer (whose referral received)
@@ -504,12 +503,12 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 }
             ]
             let refreeWalletData = await Wallet.aggregate(walletpipe);
-            // await updateWallet( {userId:refreeWalletData[0].userId}, 
-            //     {
-            //         walletBalance : refreeWalletData[0].walletBalance + profit_lossOFRefree.profit,
-            //         lostBalance : refreeWalletData[0].lostBalance + profit_lossOFRefree.loss
-            //     }
-            // );
+            await updateWallet( {userId:refreeWalletData[0].userId}, 
+                {
+                    walletBalance : refreeWalletData[0].walletBalance + profit_lossOFRefree.profit,
+                    lostBalance : refreeWalletData[0].lostBalance + profit_lossOFRefree.loss
+                }
+            );
             
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////// 25% distributed end
@@ -553,7 +552,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 const referralPipe = [
                     {
                         $match:{
-                            userId: parentUserData.userId
+                            userId: parentUserData._id
                         }
                     }
                 ]
@@ -563,7 +562,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 let walletpipeli = [
                     {
                         $match:{
-                            userId: parentUserData.userId
+                            userId: parentUserData._id
                         }
                     }
                 ]
@@ -919,7 +918,7 @@ const levelIncomeDistributionAfterProfitLoss = async(profit_lossOfParentUser,tot
                 userLevel: levels,
                 commissionFromAmount: joining_amount,
                 commissionAmount: profit_lossOfParentUser.profit,
-                head: 0
+                head: 1
             });
         }
         if(profit_lossOfParentUser.loss > 0){   // add into commission table if loss and profit or only loss no profit

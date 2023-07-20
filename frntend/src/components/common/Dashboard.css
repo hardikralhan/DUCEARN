@@ -1,0 +1,26 @@
+.mainDashboard {
+    display: flex;
+    width: 100%;
+  }
+  
+  .dashboard{
+    width: 80%;
+  }
+  
+  .main {
+    width: 80%;
+    background-repeat: no-repeat;
+    background-size: 170vh;
+  }
+  
+  @media screen and (min-device-width: 0px) and (max-device-width: 1000px) {
+    .dashboard{
+      width: auto;
+    }
+    .main {
+      background-image: none;
+      background: #f5f5f5;
+      width: 100%;
+    }
+  }
+  
