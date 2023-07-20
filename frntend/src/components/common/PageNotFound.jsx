@@ -54,7 +54,7 @@ export const PageNotFound = () => (
             Whichever it is, try using the navigation
           </Typography>
           <Button
-            href="/dashboard"
+            href="/"
             startIcon={(
               <SvgIcon fontSize="small">
                 <ArrowLeftIcon />
