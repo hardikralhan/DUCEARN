@@ -63,7 +63,7 @@ export const PageNotFound = () => (
             sx={{ mt: 3 }}
             variant="contained"
           >
-            Go back to dashboard
+            Please login again
           </Button>
         </Box>
       </Container>
