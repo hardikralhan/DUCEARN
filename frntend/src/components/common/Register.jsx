@@ -78,9 +78,17 @@ export const Register = () => {
             setIsLoading(false);
           }
         } catch (error) {
-            console.log(error);
+            // Use regular expression to extract the error message from <pre> tag
+            const errorMessageRegex = /<pre>(.*?)<br>/s;
+            const match = errorMessageRegex.exec(error.response.data);
+
+            if (match && match[1]) {
+            const errorMessage = match[1];
+            ToastError("Failed To Register:" + errorMessage);
+            } else {
+            console.log("Error message not found.");
+            }
           setIsLoading(false);
-        //   ToastError("Failed To Register:" + error.response.data.error.message);
         }
     };
     const handleJoiningAmountChange = async(plan) =>{
