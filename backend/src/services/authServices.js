@@ -307,7 +307,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             const lastUserRegisteredNumber = await getLastUserNumber(); 
             // we will get the new user's Id
             let userIdByOwnReferral = await getUserIdByOwnReferralIdService(ownReferralCode);
-            // let userIdByOwnReferral = await getUserIdByOwnReferralIdService("DU7208315");
+            // let userIdByOwnReferral = await getUserIdByOwnReferralIdService("DU2972339");
             
 
             // calculating for which level should new user will come
@@ -406,7 +406,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
     
                 await Parent.findOneAndUpdate
                 ({
-                    _id:nextParentData._id
+                    _id:nextParentData[0]._id
                 },
                 {
                     $set: nextParentObjectUpdate
@@ -512,7 +512,8 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////// 25% distributed end
- 
+            
+            let currentUserId = userIdByOwnReferral
             // get parent details of refree
             let parentTablePipeline = [
                 {
@@ -530,11 +531,19 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             let checkCount = 1;
             let levels = 0;
 
-            // if(rootUserDetails.ownReferralCode == parentUserData.parentReferralCode){
-            //     parentUserData.parentReferralCode = '8387h'
-            // }
+            
+            checkRootUserPipeline = [
+                {
+                    $match:{
+                        _id: userIdByOwnReferral
+                    }
+                }
+            ]
+            
+            rootUserCame = await User.aggregate(checkRootUserPipeline);
+            let rootUserCheck = rootUserCame[0].ownReferralCode
 
-            while((levels == 0 || levels == 12) || (rootUserDetails.ownReferralCode != parentUserData.ownReferralCode && checkCount <13)){
+            while((levels == 0 || levels == 12) || (rootUserDetails.ownReferralCode != rootUserCheck && checkCount <13)){
                 levels ++;
 
                 // // check totalIncome of this parent
@@ -568,51 +577,128 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 ]
                 let WalletDataOfParentUser = await Wallet.aggregate(walletpipeli);
 
+                // parent table of parent user Data
+                let parentTableOfParentUserDataPipeline = [
+                    {
+                        $match:{
+                            userId: parentUserData._id
+                        }
+                    }
+                ]
+                let parentTableOfParentUserData = await Parent.aggregate(parentTableOfParentUserDataPipeline);
+
                 if(levels == 1 && referralsOfParentUser[0].referralGivenTo.length >= 0){
                     // check how much income they will be receiving out of the purchase
                     let calculatedProfit = joining_amount * 0.10;                    
-                    let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
-                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser);
+                    if(parentTableOfParentUserData[0].totalChildren == 3 && referralsOfParentUser[0].referralGivenTo.length == 0){
+                        // unn 3 users se kitna level income lost me gaya hai // phir unme se jiska bhi sabse kam usko daldo usko wallet balance me daaldo commission dedo toal income as well
+                        let commPipe1 = [
+                            {
+                                $match:{
+                                    userId: parentTableOfParentUserData[0].userId,
+                                    commissionFrom: parentTableOfParentUserData[0].userOneId,
+                                    head:1  // lost income
+                                }
+                            }
+                        ]
+                        let commissionUserOne = await Commission.aggregate(commPipe1);
 
-                }else if(levels == 2 && referralGivenTo.length >= 1){
+                        let commPipe2 = [
+                            {
+                                $match:{
+                                    userId: parentTableOfParentUserData[0].userId,
+                                    commissionFrom: parentTableOfParentUserData[0].userTwoId,
+                                    head:1  // lost income
+                                }
+                            }
+                        ]
+                        let commissionUserTwo = await Commission.aggregate(commPipe2);
+
+                        let arr = [];
+                        arr.push(commissionUserOne[0].commissionAmount); arr.push(commissionUserTwo[0].commissionAmount); arr.push(calculatedProfit)
+                        let lowest = Math.min.apply( Math, arr );
+                        // whichever the lowest, insert into wallet balance total income through level, commission
+                        await updatetotalIncome( {userId : totalIncomeArrayOfParentUser[0].userId}, 
+                            {
+                                throughLevel : totalIncomeArrayOfParentUser[0].throughLevel + lowest,
+                            }
+                        )
+                        await insertCommission({
+                            userId: totalIncomeArrayOfParentUser[0].userId,
+                            commissionFrom: currentUserId,
+                            userLevel: levels,
+                            narrartion: "lowest lost income division",
+                            commissionFromAmount: joining_amount,
+                            commissionAmount: lowest,
+                            head: 0  // go in wallet
+                        });
+                        await updateWallet( {userId : totalIncomeArrayOfParentUser[0].userId}, 
+                            {
+                                walletBalance : WalletDataOfParentUser[0].walletBalance + lowest,
+                            }
+                        )
+                    }else if((parentTableOfParentUserData[0].totalChildren == 1 || parentTableOfParentUserData[0].totalChildren == 2) && referralsOfParentUser[0].referralGivenTo.length == 0){
+                        // directly go into lost
+                        await insertCommission({
+                            userId: totalIncomeArrayOfParentUser[0].userId,
+                            commissionFrom: currentUserId,
+                            userLevel: levels,
+                            commissionFromAmount: joining_amount,
+                            commissionAmount: calculatedProfit,
+                            head: 1  // go in loss
+                        });
+                        await updateWallet( {userId : totalIncomeArrayOfParentUser[0].userId}, 
+                            {
+                                lostBalance : WalletDataOfParentUser[0].lostBalance + calculatedProfit
+                            }
+                        )
+                    }else{
+                        let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
+                        await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser);
+                    }
+                    
+
+                }else if(levels == 2 && referralsOfParentUser[0].referralGivenTo.length >= 1){
                     let calculatedProfit = joining_amount * 0.06;                    
                     let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
-                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser);
+                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser);
 
-                }else if(levels == 3 && referralGivenTo.length >= 1){
+                }else if(levels == 3 && referralsOfParentUser[0].referralGivenTo.length >= 1){
                     let calculatedProfit = joining_amount * 0.04;                    
                     let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
-                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser);
+                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser);
                     
-                }else if(levels == 4 && referralGivenTo.length >= 1){
+                }else if(levels == 4 && referralsOfParentUser[0].referralGivenTo.length >= 1){
                     let calculatedProfit = joining_amount * 0.02;                    
                     let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
-                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser);
-                }else if(levels == 5 && referralGivenTo.length >= 2){
+                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser);
+                }else if(levels == 5 && referralsOfParentUser[0].referralGivenTo.length >= 2){
                     let calculatedProfit = joining_amount * 0.02;                    
                     let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
-                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser);
-                }else if((levels == 6 || levels == 7 || levels == 8)  && referralGivenTo.length >= 2){
+                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser);
+                }else if((levels == 6 || levels == 7 || levels == 8)  && referralsOfParentUser[0].referralGivenTo.length >= 2){
                     let calculatedProfit = joining_amount * 0.01;                    
                     let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
-                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser);
-                }else if((levels == 9 || levels == 10 || levels == 11 || levels == 12) && referralGivenTo.length >= 3){
+                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser);
+                }else if((levels == 9 || levels == 10 || levels == 11 || levels == 12) && referralsOfParentUser[0].referralGivenTo.length >= 3){
                     let calculatedProfit = joining_amount * 0.01;                    
                     let profit_lossOfParentUser = await checkProfitAndLostIncome(calculatedProfit,totalIncomeOfParentUser,totalIncomeArrayOfParentUser[0].userId);
-                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser);
+                    await levelIncomeDistributionAfterProfitLoss(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser);
                 }else{
                     // give all the profit into lost income of that user
-                    await insertCommission({
-                        userId: totalIncomeArrayOfParentUser[0].userId,
-                        commissionFrom: userIdByOwnReferral,
-                        userLevel: levels,
-                        commissionFromAmount: joining_amount,
-                        commissionAmount: profit_lossOfParentUser.loss,
-                        head: 1
-                    });
 
                     let times = await getMultiplierByLevels(levels);
                     let calculatedProfit = joining_amount * times;
+
+                    await insertCommission({
+                        userId: totalIncomeArrayOfParentUser[0].userId,
+                        commissionFrom: currentUserId,
+                        userLevel: levels,
+                        commissionFromAmount: joining_amount,
+                        commissionAmount: calculatedProfit,
+                        head: 1
+                    });
+
                     await updateWallet( {userId : totalIncomeArrayOfParentUser[0].userId}, 
                         {
                             lostBalance : WalletDataOfParentUser[0].lostBalance + calculatedProfit
@@ -635,6 +721,16 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
 
                 // giving old userId
                 userIdByOwnReferral = totalIncomeArrayOfParentUser[0].userId
+                checkRootUserPipeline = [
+                    {
+                        $match:{
+                            _id: userIdByOwnReferral
+                        }
+                    }
+                ]
+                
+                rootUserCame = await User.aggregate(checkRootUserPipeline);
+                rootUserCheck = rootUserCame[0].ownReferralCode
                 checkCount ++;
             }
             return;
@@ -904,7 +1000,7 @@ const checkProfitAndLostIncome = async(amount,total_income,userId) =>{
     return obj
 }
 
-const levelIncomeDistributionAfterProfitLoss = async(profit_lossOfParentUser,totalIncomeArrayOfParentUser,userIdByOwnReferral,levels,joining_amount,WalletDataOfParentUser) => {
+const levelIncomeDistributionAfterProfitLoss = async(profit_lossOfParentUser,totalIncomeArrayOfParentUser,currentUserId,levels,joining_amount,WalletDataOfParentUser) => {
     try {
         if(profit_lossOfParentUser.profit > 0){  // if there is a profit then only it will update to total income
             await updatetotalIncome( {userId : totalIncomeArrayOfParentUser[0].userId}, 
@@ -914,17 +1010,17 @@ const levelIncomeDistributionAfterProfitLoss = async(profit_lossOfParentUser,tot
             )
             await insertCommission({
                 userId: totalIncomeArrayOfParentUser[0].userId,
-                commissionFrom: userIdByOwnReferral,
+                commissionFrom: currentUserId,
                 userLevel: levels,
                 commissionFromAmount: joining_amount,
                 commissionAmount: profit_lossOfParentUser.profit,
-                head: 1
+                head: 0
             });
         }
         if(profit_lossOfParentUser.loss > 0){   // add into commission table if loss and profit or only loss no profit
             await insertCommission({
                 userId: totalIncomeArrayOfParentUser[0].userId,
-                commissionFrom: userIdByOwnReferral,
+                commissionFrom: currentUserId,
                 userLevel: levels,
                 commissionFromAmount: joining_amount,
                 commissionAmount: profit_lossOfParentUser.loss,
