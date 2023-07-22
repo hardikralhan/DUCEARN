@@ -175,7 +175,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
         if(referralCode == ''){
             referralCode = await getCompanyReferralCode()
         }
-         
+
         
         // Generating Own Referral Code
         let ownReferralCode = null
@@ -187,12 +187,18 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
         // Hashing Password
         password = await encryptPassword(password)
 
-        // find parent userId and parentReferralCode
-        const parentData = await getCurrentParent();
         let joining_amount = amount;
+        let checkFirstRegPipe = [
+            {
+                $match:{
+                    ownReferralCode: 'DU1222222'
+                }
+            }
+        ];
+        let checkFirstReg = await User.aggregate(checkFirstRegPipe);
 
-        //if no parent that means this is the first user (root user)
-        if(parentData == undefined || parentData.length == 0 ){
+        //if no user that means this is the first user (root user)
+        if(checkFirstReg == undefined || checkFirstReg.length == 0 ){
             isRoot = true;
 
             //Preparing Object To Insert
@@ -223,10 +229,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 userId : userIdByReferral,
                 totalChildren: 0,
                 rootUser: userIdByReferral,
-                level: 0,
-                currentParent: true,
-                parentUser: userIdByReferral,
-                userCountByRoot: 1
+                parentUser: userIdByReferral
             }
 
             let parent = await Parent.create(parentObject)
@@ -288,8 +291,6 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
 
             const rootUserDetails = await getRootUserDetails();
 
-            const parentUserDetails = await getUserDetailsByUserId(parentData.userId);
-
             // get referral user Id from the referral received
             let userIdOfReferrer = await getUserIdByOwnReferralIdService(referralCode);
 
@@ -301,7 +302,6 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
                 mobile: mobile,
                 image: '',
                 ownReferralCode: ownReferralCode,
-                parentReferralCode: parentUserDetails.ownReferralCode,
                 isRoot: isRoot,
                 referredBy: referralCode,
                 rootReferralCode: rootUserDetails.ownReferralCode,
@@ -317,31 +317,61 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             // get result from saved users doc of this user
 
 
-            const lastUserRegisteredNumber = await getLastUserNumber(); 
+            // const lastUserRegisteredNumber = await getLastUserNumber(); 
             // we will get the new user's Id
             let userIdByOwnReferral = await getUserIdByOwnReferralIdService(ownReferralCode);
-            // let userIdByOwnReferral = await getUserIdByOwnReferralIdService("DU2972339");
-            
+            // let userIdByOwnReferral = await getUserIdByOwnReferralIdService("DU6241606");
 
-            // calculating for which level should new user will come
-            let totalNumbersTillCurrentLevel = 0;
-            let currentLevel = lastUserRegisteredNumber.level;
-            for(let i=0;i<=currentLevel;i++){
-                totalNumbersTillCurrentLevel += Math.pow(3,i);
+            ///////////////// new logic;
+
+            let parentTableOfRefreePipeline = [
+                {
+                    $match:{
+                        userId: userIdOfReferrer
+                    }
+                }
+            ];
+            let parentTableOfRefreeArray = await Parent.aggregate(parentTableOfRefreePipeline);
+            let parentTableOfRefree = parentTableOfRefreeArray[0];
+            let queue = []; let parentUserIdOfNewregistration; let queueLevel = []; let levelOfNewRegFromReferee;
+
+            if(parentTableOfRefree.totalChildren != 3){
+                parentUserIdOfNewregistration = parentTableOfRefree.userId
+            }
+            while(parentTableOfRefree.totalChildren == 3){  // it is infinite loop basically
+                queue.push(parentTableOfRefree.userOneId);queue.push(parentTableOfRefree.userTwoId);queue.push(parentTableOfRefree.userThreeId);
+                queueLevel.push(parentTableOfRefree.level + 1);queueLevel.push(parentTableOfRefree.level + 1);queueLevel.push(parentTableOfRefree.level + 1);
+                while(queue.length != 0){
+                    let childElement = queue.shift();  // we will get the 1st element(userId) from queue
+                    let childElementLevel = queueLevel.shift();  // we will get the 1st element from queue list of level
+                    let parentTableOfChildElementPipeline = [
+                        {
+                            $match:{
+                                userId: childElement
+                            }
+                        }
+                    ];
+                    let parentTableOfChildElement = await Parent.aggregate(parentTableOfChildElementPipeline);
+                    if(parentTableOfChildElement[0].totalChildren == 3){
+                        queue.push(parentTableOfChildElement[0].userOneId);queue.push(parentTableOfChildElement[0].userTwoId);queue.push(parentTableOfChildElement[0].userThreeId); 
+                        queueLevel.push(parentTableOfChildElement[0].level + 1);queueLevel.push(parentTableOfChildElement[0].level +1);queueLevel.push(parentTableOfChildElement[0].level  + 1); 
+                    } 
+                    else{
+                        parentUserIdOfNewregistration = childElement;       // this will return the parent user
+                        levelOfNewRegFromReferee = childElementLevel;
+                        break;
+                    } 
+                }
+                break;
             }
 
-            let newLevel;
-            if(lastUserRegisteredNumber.userCountByRoot === totalNumbersTillCurrentLevel){
-                newLevel = currentLevel + 1;
-            }else newLevel = currentLevel;
+            ///////////////////////// end
 
             let parentObject = {
                 userId : userIdByOwnReferral,
                 totalChildren: 0,
                 rootUser: rootUserDetails._id,
-                level: newLevel,
-                parentUser: parentData.userId,
-                userCountByRoot: lastUserRegisteredNumber.userCountByRoot + 1
+                parentUser: parentUserIdOfNewregistration
             }
 
             let parent = await Parent.create(parentObject)
@@ -390,47 +420,29 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
 
             // update parent table doc for current user's parent
 
+            let parentTableOfParentUserPipe = [
+                {
+                    $match:{
+                        userId: parentUserIdOfNewregistration
+                    }
+                }
+            ]
+            let parentTableOfParentUser = await Parent.aggregate(parentTableOfParentUserPipe);
+
             let parentObjectUpdateForParent = {
 
-                totalChildren: parentData.totalChildren + 1,
+                totalChildren: parentTableOfParentUser[0].totalChildren + 1,
             }
-            if(parentData.totalChildren == 0){
+            if(parentTableOfParentUser[0].totalChildren == 0){
                 parentObjectUpdateForParent.userOneId = userIdByOwnReferral
-            }else if(parentData.totalChildren == 1){
+            }else if(parentTableOfParentUser[0].totalChildren == 1){
                 parentObjectUpdateForParent.userTwoId = userIdByOwnReferral
-            }else if(parentData.totalChildren == 2){
+            }else if(parentTableOfParentUser[0].totalChildren == 2){
                 parentObjectUpdateForParent.userThreeId = userIdByOwnReferral
-                parentObjectUpdateForParent.currentParent = false;
-
-                // also update for next user and make them parent
-                const parentPipelineForNextUser = [
-                    {
-                        $match:{
-                            userCountByRoot: parentData.userCountByRoot + 1
-                        }
-                    }
-                ]
-    
-                const nextParentData = await Parent.aggregate(parentPipelineForNextUser);
-    
-                let nextParentObjectUpdate = {
-                    currentParent: true,
-                }
-    
-                await Parent.findOneAndUpdate
-                ({
-                    _id:nextParentData[0]._id
-                },
-                {
-                    $set: nextParentObjectUpdate
-                },
-                {
-                    new: true
-                });
             }
             await Parent.findOneAndUpdate
             ({
-                _id:parentData._id
+                _id:parentTableOfParentUser[0]._id
             },
             {
                 $set: parentObjectUpdateForParent
@@ -438,8 +450,41 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             {
                 new: true
             });
+
+            // getting parent user details
+
+            let userDetailsOfParentPipe = [
+                {
+                    $match:{
+                        _id: parentUserIdOfNewregistration
+                    }
+                }
+            ]
+            let userDetailsOfParent = await User.aggregate(userDetailsOfParentPipe)
             
-            
+            // update current user with parent referral code
+            let userDetailsByOwnRefferalPipe = [
+                {
+                    $match:{
+                        _id: userIdByOwnReferral
+                    }
+                }
+            ]
+            let userDetailsByOwnRefferal = await User.aggregate(userDetailsByOwnRefferalPipe)
+
+            await User.findOneAndUpdate
+            ({
+                _id: userDetailsByOwnRefferal[0]._id
+            },
+            {
+                $set: {
+                    parentReferralCode : userDetailsOfParent[0].ownReferralCode
+                }
+            },
+            {
+                new: true
+            });
+
 
             const ReferralRecordPipeline = [
                 {

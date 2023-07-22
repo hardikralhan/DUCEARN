@@ -7,7 +7,7 @@ const ParentSchema = new mongoose.Schema({
     userThreeId: mongoose.Schema.Types.ObjectId,
     totalChildren: Number,
     rootUser: mongoose.Schema.Types.ObjectId,
-    level: Number,
+    level: Number,               // level from referral user
     currentParent: Boolean,
     parentUser: mongoose.Schema.Types.ObjectId,
     userCountByRoot: Number
