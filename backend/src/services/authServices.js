@@ -175,17 +175,7 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
         if(referralCode == ''){
             referralCode = await getCompanyReferralCode()
         }
-        let checkReferralCodeExistsPipeline = [
-            {
-                $match:{
-                    ownReferralCode: referralCode
-                }
-            }
-        ]
-        let checkReferralCodeExists = await User.aggregate(checkReferralCodeExistsPipeline);
-        if(checkReferralCodeExists.length == 0){
-            throw new APIError("BAD_INPUT", HttpStatusCode.BAD_INPUT, true, 'Referral Id does not exists.')
-        }
+         
         
         // Generating Own Referral Code
         let ownReferralCode = null
@@ -283,6 +273,18 @@ const userSignUpService = async (name,dob,mobile,email,referralCode,password,con
             return;
         }
         else{
+
+            let checkReferralCodeExistsPipeline = [
+                {
+                    $match:{
+                        ownReferralCode: referralCode
+                    }
+                }
+            ]
+            let checkReferralCodeExists = await User.aggregate(checkReferralCodeExistsPipeline);
+            if(checkReferralCodeExists.length == 0){
+                throw new APIError("BAD_INPUT", HttpStatusCode.BAD_INPUT, true, 'Referral Id does not exists.')
+            }
 
             const rootUserDetails = await getRootUserDetails();
 
