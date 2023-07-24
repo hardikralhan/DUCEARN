@@ -167,8 +167,8 @@ import { useState, useEffect } from "react";
               justifyContent="center"
             >
               <StatBox
-                title="1,325,134"
-                subtitle="Clients through referral"
+                title={userDetail?.walletDetails?.lostBalance}
+                subtitle="Lost Income"
                 progress="0.80"
                 increase="+43%"
                 icon={
