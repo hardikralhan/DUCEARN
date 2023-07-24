@@ -40,11 +40,11 @@ import { useState, useEffect } from "react";
       console.log(getTokenData);
       let res = await getUserDetailServiceThroughToken(getTokenData,getTokenData.token);
       console.log(res.data.result)
-      if (res?.data?.result?.status === 0) {
+      if (res?.data?.result?.userDetails.status === 0) {
         navigate("/payment", {
           state: {
-            email: res.data.result.email,
-            amount: res.data.result.joiningDetails.selectedPlan
+            email: res.data.result.userDetails.email,
+            amount: res.data.result.userDetails.joiningAmount
           },
         });
       }
