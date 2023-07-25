@@ -4,10 +4,12 @@ import "react-phone-input-2/lib/bootstrap.css";
 import { registerUserService } from "../../services/authservices";
 import {ToastError} from './Toast'
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 export const Register = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
@@ -65,9 +67,11 @@ export const Register = () => {
             dataToSend.joiningAmount = totalJoiningAmount;
             dataToSend.currency= "busd";
             dataToSend.dob = 24081999;
+            
             await registerUserService(dataToSend);
-            navigate("/", {
+            navigate("/payment", {
               state: {
+                package: selectedPlan,
                 email: email,
                 amount: totalJoiningAmount,
               },
