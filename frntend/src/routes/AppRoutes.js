@@ -7,12 +7,14 @@ import { Register } from "../components/common/Register";
 import { ColorModeContext, useMode } from "../theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { MyProSidebarProvider } from "../global/sidebar/sidebarContext";
+import { Team } from "../components/common/Team";
+import { Payment } from "../components/common/Payment";
 
 import Topbar from "../global/Topbar";
 
 import Dashboard from "../components/common/Dashboard";
 
-export default function AppRoutes() {
+export default function AppRoutes() { 
 
   // states
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -71,6 +73,7 @@ export default function AppRoutes() {
                       <Route exact path="/dashboard" element={<Dashboard />} />
                       <Route exact path="/" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
                       <Route exact path="/register" element={<Register />} />
+                      <Route exact path="/team" element={<Team />} />
                       <Route path="*" element={<PageNotFound />} />
                     </Routes>
                   </main>
@@ -78,13 +81,16 @@ export default function AppRoutes() {
               </MyProSidebarProvider>
             </ThemeProvider>
           </ColorModeContext.Provider>
+              
         )}
-
+        
         {!isLoggedIn && (
           <Routes>
             <Route exact path="/" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
             <Route exact path="/register" element={<Register />} />
+            <Route path="/payment" element={<Payment />} />
             <Route path="*" element={<PageNotFound />} />
+            {/* <Route exact path="/team" element={<Team />} /> */}
           </Routes>
         )}
 
