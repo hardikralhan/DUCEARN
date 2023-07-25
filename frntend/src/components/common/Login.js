@@ -46,13 +46,13 @@ export const Login = (props) => {
         props.setIsLoggedIn(true)
         setOpen(false)
         navigate("/dashboard")
-        event.preventDefault();
+        // event.preventDefault();
       }else {
         ToastError("Please fill") 
-        event.preventDefault() 
+        // event.preventDefault() 
       }
     } catch (error) {
-      ToastError("please enter valid email and password");
+        ToastError(error+"please enter valid email and password");
     }
   }
 
@@ -69,7 +69,7 @@ export const Login = (props) => {
 //   Plugins:
 //     - @tailwindcss/forms
 // */
-<div className='py-40' style={{ backgroundImage:`url(${bg_image})` }}> 
+<div className='py-20' style={{ backgroundImage:`url(${bg_image})` }}> 
 <div className="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8">
   <div className="mx-auto max-w-lg">
 
