@@ -52,7 +52,7 @@ export const Login = (props) => {
         // event.preventDefault() 
       }
     } catch (error) {
-        ToastError(error+"please enter valid email and password");
+        ToastError(error+"please enter valid email and password"); 
     }
   }
 
