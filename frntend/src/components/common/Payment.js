@@ -70,11 +70,11 @@ export function Payment() {
                         <p></p>
                         
                         <select
-                            value={currency}
-                            onChange={(e) => {
-                                setCurrency(e.target.value);
-                                handleCurrencyChange(e.target.value);
-                            }}
+                            // value={currency}
+                            // onChange={(e) => {
+                            //     setCurrency(e.target.value);
+                            //     handleCurrencyChange(e.target.value);
+                            // }}
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-md px-5 py-3 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 my-3"
                         >
                         
