@@ -4,6 +4,8 @@ import {ToastError} from './Toast'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import { loginUserService } from '../../services/authservices'
+import bg_image from '../../assests/coinImages/dubai-night-dubai-city-night-landscape.jpg'
+import logo from "../../assests/coinImages/LogoFinal.png"
 
 export const Login = (props) => {
 
@@ -28,11 +30,9 @@ export const Login = (props) => {
 
       setOpen(true)
       if(validateData()){ 
-        console.log('step 1')
         let dataToSend = {} 
         dataToSend.userId = email
         dataToSend.password = password 
-        let data = JSON.stringify(dataToSend);
         let res = await loginUserService(dataToSend);
         console.log( res);
         dispatch({ 
@@ -52,8 +52,7 @@ export const Login = (props) => {
         event.preventDefault() 
       }
     } catch (error) {
-      console.log(error,'===')
-      // ToastError(error)
+      ToastError("please enter valid email and password");
     }
   }
 
@@ -70,20 +69,16 @@ export const Login = (props) => {
 //   Plugins:
 //     - @tailwindcss/forms
 // */
-
-<div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+<div className='py-40' style={{ backgroundImage:`url(${bg_image})` }}> 
+<div className="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8">
   <div className="mx-auto max-w-lg">
-    <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
-      Get started today
-    </h1>
 
     <p className="mx-auto mt-4 max-w-md text-center text-gray-500">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati sunt
-      dolores deleniti inventore quaerat mollitia?
-    </p>
+      <img src= {logo}></img>
+    </p> 
 
     <div
-      className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+      className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-white"
     >
       <p className="text-center text-lg font-medium">Sign in to your account</p>
 
@@ -131,6 +126,7 @@ export const Login = (props) => {
       </p>
     </div>
   </div>
+</div>
 </div>
   )
 }
